@@ -24,6 +24,7 @@ const App = () => {
   const [typedText, setTypedText] = useState("");
   const threeRef = useRef();
   const mountRef = useRef();
+  const mobileMenuRef = useRef();
   const fullText = "Full Stack Software Developer";
   // Typing animation effect
   useEffect(() => {
@@ -324,6 +325,44 @@ const App = () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+  // Mobile menu animation
+  useEffect(() => {
+    if (mobileMenuRef.current) {
+      if (mobileMenuOpen) {
+        // Animate menu items when opening
+        gsap.fromTo(
+          mobileMenuRef.current.children,
+          { y: 20, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.3,
+            stagger: 0.1,
+            ease: "power2.out"
+          }
+        );
+        // Animate menu container
+        gsap.fromTo(
+          mobileMenuRef.current,
+          { height: 0, opacity: 0 },
+          {
+            height: "auto",
+            opacity: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          }
+        );
+      } else {
+        // Animate menu container when closing
+        gsap.to(mobileMenuRef.current, {
+          height: 0,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in"
+        });
+      }
+    }
+  }, [mobileMenuOpen]);
   const scrollToSection = (sectionId) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
     setMobileMenuOpen(false);
@@ -511,23 +550,28 @@ const App = () => {
             </div>
             {/* Mobile Menu */}
             {mobileMenuOpen && (
-              <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
-                {[
-                  "hero",
-                  "about",
-                  "skills",
-                  "experience",
-                  // "projects",
-                  "contact",
-                ].map((section) => (
-                  <button
-                    key={section}
-                    onClick={() => scrollToSection(section)}
-                    className="cursor-pointer block w-full text-left py-2 px-4 capitalize hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  >
-                    {section}
-                  </button>
-                ))}
+              <div 
+                ref={mobileMenuRef}
+                className="md:hidden overflow-hidden"
+              >
+                <div className="py-4 border-t border-gray-200 dark:border-gray-700">
+                  {[
+                    "hero",
+                    "about",
+                    "skills",
+                    "experience",
+                    // "projects",
+                    "contact",
+                  ].map((section) => (
+                    <button
+                      key={section}
+                      onClick={() => scrollToSection(section)}
+                      className="cursor-pointer block w-full text-left py-3 px-4 capitalize hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800 last:border-0"
+                    >
+                      {section}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
