@@ -8,5 +8,27 @@ export default defineConfig({
     react(),
     tailwindcss() 
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // React core
+          vendor: ['react', 'react-dom'],
+
+          // Routing
+          router: ['react-router-dom'],
+
+          // Three.js & 3D
+          three: ['three', '@react-three/fiber', '@react-three/drei'],
+
+          // Animation libraries
+          animation: ['gsap'],
+
+          // Icons
+          icons: ['lucide-react'],
+        },
+      }
+    }
+  },
   base: '/aboutme/',
 })
