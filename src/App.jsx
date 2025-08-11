@@ -6,11 +6,8 @@ import {
   Mail,
   Phone,
   MapPin,
-  ExternalLink,
   Menu,
   X,
-  Sun,
-  Moon,
   ChevronDown,
 } from "lucide-react";
 import gsap from "gsap";
@@ -18,7 +15,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 const App = () => {
-  const [darkMode, setDarkMode] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
   const [typedText, setTypedText] = useState("");
@@ -132,8 +128,8 @@ const App = () => {
     };
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (mountRef && renderer.domElement) {
-        mountRef.removeChild(renderer.domElement);
+      if (mountRef.current && renderer.domElement) {
+        mountRef.current.removeChild(renderer.domElement);
       }
       geometries.forEach((geo) => geo.dispose());
       materials.forEach((mat) => mat.dispose());
@@ -338,7 +334,7 @@ const App = () => {
             opacity: 1,
             duration: 0.3,
             stagger: 0.1,
-            ease: "power2.out"
+            ease: "power2.out",
           }
         );
         // Animate menu container
@@ -349,7 +345,7 @@ const App = () => {
             height: "auto",
             opacity: 1,
             duration: 0.3,
-            ease: "power2.out"
+            ease: "power2.out",
           }
         );
       } else {
@@ -358,7 +354,7 @@ const App = () => {
           height: 0,
           opacity: 0,
           duration: 0.3,
-          ease: "power2.in"
+          ease: "power2.in",
         });
       }
     }
@@ -492,7 +488,9 @@ const App = () => {
     },
   ];
   return (
-    <div className="min-h-screen transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+    <div
+      className={`min-h-screen transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-white `}
+    >
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -501,36 +499,21 @@ const App = () => {
               Martunis
             </div>
             <div className="hidden md:flex space-x-8">
-              {[
-                "hero",
-                "about",
-                "skills",
-                "experience",
-                // "projects",
-                "contact",
-              ].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`cursor-pointer capitalize hover:text-blue-600 transition-colors ${
-                    activeSection === section ? "text-blue-600" : ""
-                  }`}
-                >
-                  {section}
-                </button>
-              ))}
+              {["hero", "about", "skills", "experience", "contact"].map(
+                (section) => (
+                  <button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`cursor-pointer capitalize hover:text-blue-600 transition-colors ${
+                      activeSection === section ? "text-blue-600" : ""
+                    }`}
+                  >
+                    {section}
+                  </button>
+                )
+              )}
             </div>
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className="cursor-pointer p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-              >
-                {darkMode ? (
-                  <Sun className="w-5 h-5" />
-                ) : (
-                  <Moon className="w-5 h-5" />
-                )}
-              </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800"
@@ -545,10 +528,7 @@ const App = () => {
           </div>
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div 
-              ref={mobileMenuRef}
-              className="md:hidden overflow-hidden"
-            >
+            <div ref={mobileMenuRef} className="md:hidden overflow-hidden">
               <div className="py-4 border-t border-gray-200 dark:border-gray-700">
                 {[
                   "hero",
@@ -580,7 +560,7 @@ const App = () => {
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <img
-              src="https://placehold.co/400x400"
+              src="./profile.jpeg"
               alt="Profile"
               className="hero-image w-32 h-32 rounded-full mx-auto mb-6 border-4 border-blue-600 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/50 transition-shadow duration-300"
             />
@@ -593,10 +573,10 @@ const App = () => {
             <span className="animate-pulse">|</span>
           </h2>
           <p className="hero-description text-lg md:text-xl mb-8 max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
-            Passionate about creating innovative digital solutions with 5+
-            years of experience in full-stack development
+            Passionate about creating innovative digital solutions with 5+ years
+            of experience in full-stack development
           </p>
-          <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">              
+          <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => scrollToSection("contact")}
               className="cursor-pointer px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-all duration-300"
@@ -620,10 +600,10 @@ const App = () => {
               About Me
             </h2>
             <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Full-stack Developer with 5+ years of experience building
-              scalable web and mobile applications. Passionate about
-              transforming complex challenges into elegant, user-focused
-              solutions that deliver measurable impact.
+              Full-stack Developer with 5+ years of experience building scalable
+              web and mobile applications. Passionate about transforming complex
+              challenges into elegant, user-focused solutions that deliver
+              measurable impact.
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
@@ -841,10 +821,18 @@ const App = () => {
                 >
                   <Github className="w-6 h-6" />
                 </a>
-                <a href="https://www.linkedin.com/in/martunis-mukhtar-64718297" target="_blank" rel="noopener noreferrer" className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                <a
+                  href="https://www.linkedin.com/in/martunis-mukhtar-64718297"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                >
                   <Linkedin className="w-6 h-6" />
                 </a>
-                <a href="mailto:martunismukhtar@gmail.com" className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                <a
+                  href="mailto:martunismukhtar@gmail.com"
+                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                >
                   <Mail className="w-6 h-6" />
                 </a>
               </div>
