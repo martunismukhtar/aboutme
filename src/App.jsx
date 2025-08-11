@@ -826,7 +826,7 @@ const App = () => {
                 <div className="space-y-4">
                   <div className="flex items-center">
                     <Mail className="w-6 h-6 text-blue-600 mr-4" />
-                    <span>martunismukhtar@email.com</span>
+                    <span>martunismukhtar@gmail.com</span>
                   </div>
                   <div className="flex items-center">
                     <Phone className="w-6 h-6 text-blue-600 mr-4" />
