@@ -132,8 +132,8 @@ const App = () => {
     };
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mountRef && renderer.domElement) {
+        mountRef.removeChild(renderer.domElement);
       }
       geometries.forEach((geo) => geo.dispose());
       materials.forEach((mat) => mat.dispose());
@@ -492,20 +492,64 @@ const App = () => {
     },
   ];
   return (
-    <div
-      className={`${
-        darkMode ? "dark" : ""
-      } min-h-screen transition-colors duration-300`}
-    >
-      <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-        {/* Navigation */}
-        <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Martunis
-              </div>
-              <div className="hidden md:flex space-x-8">
+    <div className="min-h-screen transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Martunis
+            </div>
+            <div className="hidden md:flex space-x-8">
+              {[
+                "hero",
+                "about",
+                "skills",
+                "experience",
+                // "projects",
+                "contact",
+              ].map((section) => (
+                <button
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className={`cursor-pointer capitalize hover:text-blue-600 transition-colors ${
+                    activeSection === section ? "text-blue-600" : ""
+                  }`}
+                >
+                  {section}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className="cursor-pointer p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              >
+                {darkMode ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          </div>
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div 
+              ref={mobileMenuRef}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="py-4 border-t border-gray-200 dark:border-gray-700">
                 {[
                   "hero",
                   "about",
@@ -517,386 +561,336 @@ const App = () => {
                   <button
                     key={section}
                     onClick={() => scrollToSection(section)}
-                    className={`cursor-pointer capitalize hover:text-blue-600 transition-colors ${
-                      activeSection === section ? "text-blue-600" : ""
-                    }`}
+                    className="cursor-pointer block w-full text-left py-3 px-4 capitalize hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800 last:border-0"
                   >
                     {section}
                   </button>
                 ))}
               </div>
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className="cursor-pointer p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                >
-                  {darkMode ? (
-                    <Sun className="w-5 h-5" />
-                  ) : (
-                    <Moon className="w-5 h-5" />
-                  )}
-                </button>
-                <button
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800"
-                >
-                  {mobileMenuOpen ? (
-                    <X className="w-5 h-5" />
-                  ) : (
-                    <Menu className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
             </div>
-            {/* Mobile Menu */}
-            {mobileMenuOpen && (
-              <div 
-                ref={mobileMenuRef}
-                className="md:hidden overflow-hidden"
+          )}
+        </div>
+      </nav>
+      {/* Hero Section */}
+      <section
+        id="hero"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
+        <div ref={mountRef} className="absolute inset-0 z-0" />
+        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <img
+              src="https://placehold.co/400x400"
+              alt="Profile"
+              className="hero-image w-32 h-32 rounded-full mx-auto mb-6 border-4 border-blue-600 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/50 transition-shadow duration-300"
+            />
+          </div>
+          <h1 className="hero-title text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            Hello, I'm Martunis
+          </h1>
+          <h2 className="hero-subtitle text-2xl md:text-3xl font-medium mb-6 text-gray-600 dark:text-gray-300">
+            {typedText}
+            <span className="animate-pulse">|</span>
+          </h2>
+          <p className="hero-description text-lg md:text-xl mb-8 max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
+            Passionate about creating innovative digital solutions with 5+
+            years of experience in full-stack development
+          </p>
+          <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">              
+            <button
+              onClick={() => scrollToSection("contact")}
+              className="cursor-pointer px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-all duration-300"
+            >
+              Get In Touch
+            </button>
+          </div>
+        </div>
+        <div
+          onClick={() => scrollToSection("about")}
+          className="cursor-pointer absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
+        >
+          <ChevronDown className="w-6 h-6 text-gray-400" />
+        </div>
+      </section>
+      {/* About Section */}
+      <section id="about" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              About Me
+            </h2>
+            <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              Full-stack Developer with 5+ years of experience building
+              scalable web and mobile applications. Passionate about
+              transforming complex challenges into elegant, user-focused
+              solutions that deliver measurable impact.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="animate-on-scroll text-center p-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="text-4xl font-bold text-blue-600 mb-2">30+</div>
+              <div className="text-lg font-medium">Projects Completed</div>
+            </div>
+            <div className="animate-on-scroll text-center p-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="text-4xl font-bold text-blue-600 mb-2">5+</div>
+              <div className="text-lg font-medium">Years Experience</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Skills Section */}
+      <section id="skills" className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Skills & Technologies
+            </h2>
+            <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300">
+              Here are the technologies I work with
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {skills.map((skillCategory, index) => (
+              <div
+                key={index}
+                className="animate-on-scroll skill-category rounded-3xl p-8 hover:shadow-lg transition-all duration-300 border bg-zinc-50 hover:bg-white border-zinc-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-750"
               >
-                <div className="py-4 border-t border-gray-200 dark:border-gray-700">
-                  {[
-                    "hero",
-                    "about",
-                    "skills",
-                    "experience",
-                    // "projects",
-                    "contact",
-                  ].map((section) => (
-                    <button
-                      key={section}
-                      onClick={() => scrollToSection(section)}
-                      className="cursor-pointer block w-full text-left py-3 px-4 capitalize hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-800 last:border-0"
+                <div className="flex items-center mb-6">
+                  <div className="text-3xl mr-4">{skillCategory.icon}</div>
+                  <h3 className="text-2xl font-bold transition-colors text-zinc-900 dark:text-white">
+                    {skillCategory.category}
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {skillCategory.skills.map((skill, skillIndex) => (
+                    <div
+                      key={skillIndex}
+                      className="skill-item p-4 rounded-xl border transition-all duration-200 hover:scale-105 bg-white border-zinc-100 hover:border-blue-600 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-blue-600"
                     >
-                      {section}
-                    </button>
+                      <div className="font-semibold mb-1 transition-colors text-zinc-900 dark:text-white">
+                        {skill.name}
+                      </div>
+                      <div className="text-xs mb-2 transition-colors text-zinc-500 dark:text-gray-400">
+                        {skill.years}
+                      </div>
+                      <div
+                        className={`text-xs px-2 py-1 rounded-full inline-block transition-colors ${
+                          skill.level === "Expert"
+                            ? "bg-blue-600 text-white"
+                            : skill.level === "Advanced"
+                            ? "bg-purple-600 text-white"
+                            : "bg-indigo-600 text-white"
+                        }`}
+                      >
+                        {skill.level}
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
-            )}
+            ))}
           </div>
-        </nav>
-        {/* Hero Section */}
-        <section
-          id="hero"
-          className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        >
-          <div ref={mountRef} className="absolute inset-0 z-0" />
-          <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
-            <div className="mb-8">
-              <img
-                src="./profile.jpeg"
-                alt="Profile"
-                className="hero-image w-32 h-32 rounded-full mx-auto mb-6 border-4 border-blue-600 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/50 transition-shadow duration-300"
-              />
-            </div>
-            <h1 className="hero-title text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              Hello, I'm Martunis
-            </h1>
-            <h2 className="hero-subtitle text-2xl md:text-3xl font-medium mb-6 text-gray-600 dark:text-gray-300">
-              {typedText}
-              <span className="animate-pulse">|</span>
+        </div>
+      </section>
+      {/* Experience Section - Combined for Mobile and Desktop */}
+      <section id="experience" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Work Experience
             </h2>
-            <p className="hero-description text-lg md:text-xl mb-8 max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
-              Passionate about creating innovative digital solutions with 5+
-              years of experience in full-stack development
+            <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300">
+              My professional journey and key achievements
             </p>
-            <div className="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">              
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="cursor-pointer px-8 py-3 border-2 border-blue-600 text-blue-600 rounded-full hover:bg-blue-600 hover:text-white transition-all duration-300"
-              >
-                Get In Touch
-              </button>
-            </div>
           </div>
-          <div
-            onClick={() => scrollToSection("about")}
-            className="cursor-pointer absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce"
-          >
-            <ChevronDown className="w-6 h-6 text-gray-400" />
-          </div>
-        </section>
-        {/* About Section */}
-        <section id="about" className="py-20 bg-gray-50 dark:bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                About Me
-              </h2>
-              <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-                Full-stack Developer with 5+ years of experience building
-                scalable web and mobile applications. Passionate about
-                transforming complex challenges into elegant, user-focused
-                solutions that deliver measurable impact.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="animate-on-scroll text-center p-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="text-4xl font-bold text-blue-600 mb-2">30+</div>
-                <div className="text-lg font-medium">Projects Completed</div>
-              </div>
-              <div className="animate-on-scroll text-center p-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="text-4xl font-bold text-blue-600 mb-2">5+</div>
-                <div className="text-lg font-medium">Years Experience</div>
-              </div>
-            </div>
-          </div>
-        </section>
-        {/* Skills Section */}
-        <section id="skills" className="py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Skills & Technologies
-              </h2>
-              <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300">
-                Here are the technologies I work with
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
-              {skills.map((skillCategory, index) => (
+          <div className="relative">
+            {/* Vertical line - only visible on desktop */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-blue-600 dark:bg-blue-600 md:block hidden"></div>
+            {/* Experience items */}
+            <div className="space-y-12">
+              {experiences.map((exp, index) => (
                 <div
                   key={index}
-                  className="animate-on-scroll skill-category rounded-3xl p-8 hover:shadow-lg transition-all duration-300 border bg-zinc-50 hover:bg-white border-zinc-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-750"
+                  className={`animate-on-scroll relative flex ${
+                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  } items-center flex-col md:flex-row`}
                 >
-                  <div className="flex items-center mb-6">
-                    <div className="text-3xl mr-4">{skillCategory.icon}</div>
-                    <h3 className="text-2xl font-bold transition-colors text-zinc-900 dark:text-white">
-                      {skillCategory.category}
-                    </h3>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    {skillCategory.skills.map((skill, skillIndex) => (
-                      <div
-                        key={skillIndex}
-                        className="skill-item p-4 rounded-xl border transition-all duration-200 hover:scale-105 bg-white border-zinc-100 hover:border-blue-600 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-blue-600"
-                      >
-                        <div className="font-semibold mb-1 transition-colors text-zinc-900 dark:text-white">
-                          {skill.name}
-                        </div>
-                        <div className="text-xs mb-2 transition-colors text-zinc-500 dark:text-gray-400">
-                          {skill.years}
-                        </div>
-                        <div
-                          className={`text-xs px-2 py-1 rounded-full inline-block transition-colors ${
-                            skill.level === "Expert"
-                              ? "bg-blue-600 text-white"
-                              : skill.level === "Advanced"
-                              ? "bg-purple-600 text-white"
-                              : "bg-indigo-600 text-white"
-                          }`}
-                        >
-                          {skill.level}
+                  {/* Timeline dot - only visible on desktop */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-blue-600 border-4 border-white dark:border-gray-800 z-10 md:block hidden"></div>
+                  {/* Content */}
+                  <div
+                    className={`w-full md:w-5/12 ${
+                      index % 2 === 0
+                        ? "md:pr-8 md:text-right"
+                        : "md:pl-8 md:text-left"
+                    } mb-8 md:mb-0`}
+                  >
+                    <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                      <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900 rounded-full mb-2">
+                        {exp.period}
+                      </span>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        {exp.role}
+                      </h3>
+                      <h4 className="text-lg font-medium text-blue-600 mb-3">
+                        {exp.company}
+                      </h4>
+                      <p className="text-gray-600 dark:text-gray-300 mb-4">
+                        {exp.description}
+                      </p>
+                      {/* Tools for mobile view */}
+                      <div className="md:hidden mt-4">
+                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">
+                          Tools & Technologies
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {exp.tools.map((tool, toolIndex) => (
+                            <span
+                              key={toolIndex}
+                              className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded"
+                            >
+                              {tool}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                  {/* Spacer for timeline - only on desktop */}
+                  <div className="hidden md:block md:w-2/12"></div>
+                  {/* Achievements */}
+                  <div
+                    className={`w-full md:w-5/12 ${
+                      index % 2 === 0 ? "md:pl-8" : "md:pr-8"
+                    } md:text-left`}
+                  >
+                    <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                      <h4 className="font-bold text-gray-900 dark:text-white mb-3">
+                        Key Achievements
+                      </h4>
+                      <ul className="space-y-2">
+                        {exp.achievements.map((achievement, achIndex) => (
+                          <li key={achIndex} className="flex items-start">
+                            <div className="flex-shrink-0 mt-1 mr-2">
+                              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            </div>
+                            <span className="text-gray-600 dark:text-gray-300">
+                              {achievement}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                      {/* Tools for desktop view */}
+                      <div className="hidden md:block mt-4">
+                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">
+                          Tools & Technologies
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {exp.tools.map((tool, toolIndex) => (
+                            <span
+                              key={toolIndex}
+                              className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded"
+                            >
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </section>
-        {/* Experience Section - Combined for Mobile and Desktop */}
-        <section id="experience" className="py-20 bg-gray-50 dark:bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Work Experience
-              </h2>
-              <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300">
-                My professional journey and key achievements
-              </p>
-            </div>
-            <div className="relative">
-              {/* Vertical line - only visible on desktop */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-blue-600 dark:bg-blue-600 md:block hidden"></div>
-              {/* Experience items */}
-              <div className="space-y-12">
-                {experiences.map((exp, index) => (
-                  <div
-                    key={index}
-                    className={`animate-on-scroll relative flex ${
-                      index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                    } items-center flex-col md:flex-row`}
-                  >
-                    {/* Timeline dot - only visible on desktop */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 rounded-full bg-blue-600 border-4 border-white dark:border-gray-800 z-10 md:block hidden"></div>
-                    {/* Content */}
-                    <div
-                      className={`w-full md:w-5/12 ${
-                        index % 2 === 0
-                          ? "md:pr-8 md:text-right"
-                          : "md:pl-8 md:text-left"
-                      } mb-8 md:mb-0`}
-                    >
-                      <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                        <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 bg-blue-100 dark:text-blue-300 dark:bg-blue-900 rounded-full mb-2">
-                          {exp.period}
-                        </span>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-                          {exp.role}
-                        </h3>
-                        <h4 className="text-lg font-medium text-blue-600 mb-3">
-                          {exp.company}
-                        </h4>
-                        <p className="text-gray-600 dark:text-gray-300 mb-4">
-                          {exp.description}
-                        </p>
-                        {/* Tools for mobile view */}
-                        <div className="md:hidden mt-4">
-                          <h4 className="font-bold text-gray-900 dark:text-white mb-2">
-                            Tools & Technologies
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {exp.tools.map((tool, toolIndex) => (
-                              <span
-                                key={toolIndex}
-                                className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded"
-                              >
-                                {tool}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {/* Spacer for timeline - only on desktop */}
-                    <div className="hidden md:block md:w-2/12"></div>
-                    {/* Achievements */}
-                    <div
-                      className={`w-full md:w-5/12 ${
-                        index % 2 === 0 ? "md:pl-8" : "md:pr-8"
-                      } md:text-left`}
-                    >
-                      <div className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
-                        <h4 className="font-bold text-gray-900 dark:text-white mb-3">
-                          Key Achievements
-                        </h4>
-                        <ul className="space-y-2">
-                          {exp.achievements.map((achievement, achIndex) => (
-                            <li key={achIndex} className="flex items-start">
-                              <div className="flex-shrink-0 mt-1 mr-2">
-                                <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                              </div>
-                              <span className="text-gray-600 dark:text-gray-300">
-                                {achievement}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                        {/* Tools for desktop view */}
-                        <div className="hidden md:block mt-4">
-                          <h4 className="font-bold text-gray-900 dark:text-white mb-2">
-                            Tools & Technologies
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {exp.tools.map((tool, toolIndex) => (
-                              <span
-                                key={toolIndex}
-                                className="px-2 py-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded"
-                              >
-                                {tool}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-        {/* Contact Section */}
-        <section id="contact" className="py-20 bg-gray-50 dark:bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Get In Touch
-              </h2>
-              <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300">
-                Let's work together on your next project
-              </p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-12">
-              <div className="animate-on-scroll">
-                <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Mail className="w-6 h-6 text-blue-600 mr-4" />
-                    <span>martunismukhtar@gmail.com</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Phone className="w-6 h-6 text-blue-600 mr-4" />
-                    <span>+62 852-6014-2060</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="w-6 h-6 text-blue-600 mr-4" />
-                    <span>Lhokseumawe, Aceh, Indonesia</span>
-                  </div>
-                </div>
-                <div className="flex space-x-4 mt-8">
-                  <a
-                    href="https://github.com/martunismukhtar"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
-                  >
-                    <Github className="w-6 h-6" />
-                  </a>
-                  <a href="https://www.linkedin.com/in/martunis-mukhtar-64718297" target="_blank" rel="noopener noreferrer" className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
-                    <Linkedin className="w-6 h-6" />
-                  </a>
-                  <a href="mailto:martunismukhtar@gmail.com" className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
-                    <Mail className="w-6 h-6" />
-                  </a>
-                </div>
-              </div>
-              <div className="animate-on-scroll">
-                <div className="space-y-6">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      className="w-full p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Your Email"
-                      className="w-full p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
-                    />
-                  </div>
-                  <div>
-                    <textarea
-                      rows="5"
-                      placeholder="Your Message"
-                      className="w-full p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
-                    />
-                  </div>
-                  <a
-                    href="mailto:martunismukhtar@gmail.com"
-                    className="flex items-center justify-center w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-blue-600/25 transform hover:scale-105 transition-all duration-300"
-                  >
-                    Send Message
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        {/* Footer */}
-        <footer className="py-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-gray-600 dark:text-gray-300">
-              © 2025 Martunis. Built with React.js & Three.js
+        </div>
+      </section>
+      {/* Contact Section */}
+      <section id="contact" className="py-20 bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="section-title text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Get In Touch
+            </h2>
+            <p className="animate-on-scroll text-xl text-gray-600 dark:text-gray-300">
+              Let's work together on your next project
             </p>
           </div>
-        </footer>
-      </div>
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="animate-on-scroll">
+              <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <Mail className="w-6 h-6 text-blue-600 mr-4" />
+                  <span>martunismukhtar@email.com</span>
+                </div>
+                <div className="flex items-center">
+                  <Phone className="w-6 h-6 text-blue-600 mr-4" />
+                  <span>+62 852-6014-2060</span>
+                </div>
+                <div className="flex items-center">
+                  <MapPin className="w-6 h-6 text-blue-600 mr-4" />
+                  <span>Lhokseumawe, Aceh, Indonesia</span>
+                </div>
+              </div>
+              <div className="flex space-x-4 mt-8">
+                <a
+                  href="https://github.com/martunismukhtar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                >
+                  <Github className="w-6 h-6" />
+                </a>
+                <a href="https://www.linkedin.com/in/martunis-mukhtar-64718297" target="_blank" rel="noopener noreferrer" className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                  <Linkedin className="w-6 h-6" />
+                </a>
+                <a href="mailto:martunismukhtar@gmail.com" className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors">
+                  <Mail className="w-6 h-6" />
+                </a>
+              </div>
+            </div>
+            <div className="animate-on-scroll">
+              <div className="space-y-6">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    className="w-full p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    placeholder="Your Email"
+                    className="w-full p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div>
+                  <textarea
+                    rows="5"
+                    placeholder="Your Message"
+                    className="w-full p-4 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  />
+                </div>
+                <a
+                  href="mailto:martunismukhtar@gmail.com"
+                  className="flex items-center justify-center w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-blue-600/25 transform hover:scale-105 transition-all duration-300"
+                >
+                  Send Message
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Footer */}
+      <footer className="py-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-gray-600 dark:text-gray-300">
+            © 2025 Martunis. Built with React.js & Three.js
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
